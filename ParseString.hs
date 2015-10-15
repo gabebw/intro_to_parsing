@@ -7,14 +7,15 @@ import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOve
 import Text.Parsec.String (Parser)
 import Text.Parsec.String.Parsec (parse)
 import Text.Parsec.String.Char (oneOf, char, digit ,string, letter, satisfy, anyChar)
-import Text.Parsec.String.Combinator (many1, anyToken)
+import Text.Parsec.String.Combinator (many1, anyToken, eof, manyTill)
 import Text.Parsec.Combinator (choice)
+import Text.ParserCombinators.Parsec (try)
 
 main :: IO ()
 main = do
     a <- getArgs
     case a of
-      [str] -> either print print $ parse myParser "" str
+      [str] -> either print print $ parse ugh "" str
       _ -> error "please pass one argument with the string to parse"
 
 myParser :: Parser Integer
@@ -35,3 +36,11 @@ whitespace = void $ many $ oneOf " \n\t"
 
 rhymes :: Parser String
 rhymes = choice [string "art", string "cart"]
+
+-- Try on "hey there heart hey"
+ugh :: Parser String
+ugh = do
+    manyTill (anyChar) (try $ string "heart")
+    whitespace
+    string "heart"
+    try (many anyChar)
