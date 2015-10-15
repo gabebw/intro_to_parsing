@@ -42,5 +42,7 @@ ugh :: Parser String
 ugh = do
     manyTill (anyChar) (try $ string "heart")
     whitespace
-    string "heart"
-    try (many anyChar)
+    x <- string "heart"
+    whitespace
+    return x
+    -- try (many anyChar)
