@@ -1,7 +1,14 @@
 import System.Environment
-import Text.Parsec
-import Text.Parsec.String
 import Control.Monad
+import Control.Applicative
+import Data.Char
+
+import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOver)
+import Text.Parsec.String (Parser)
+import Text.Parsec.String.Parsec (parse)
+import Text.Parsec.String.Char (oneOf, char, digit ,string, letter, satisfy, anyChar)
+import Text.Parsec.String.Combinator (many1, anyToken)
+import Text.Parsec.Combinator (choice)
 
 main :: IO ()
 main = do
@@ -25,3 +32,6 @@ lexeme p = p <* whitespace
 -- Parses (and then ignores) any whitespace
 whitespace :: Parser ()
 whitespace = void $ many $ oneOf " \n\t"
+
+rhymes :: Parser String
+rhymes = choice [string "art", string "cart"]
