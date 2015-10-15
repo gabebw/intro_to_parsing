@@ -37,6 +37,7 @@ whitespace = void $ many $ oneOf " \n\t"
 rhymes :: Parser String
 rhymes = choice [string "art", string "cart"]
 
+-- runhaskell ParseString.hs "horse before the heart right"
 -- Try on "hey there heart hey"
 ugh :: Parser String
 ugh = do
@@ -45,4 +46,4 @@ ugh = do
     x <- string "heart"
     whitespace
     return x
-    -- try (many anyChar)
+    try (many anyChar)
