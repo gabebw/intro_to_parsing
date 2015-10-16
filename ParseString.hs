@@ -7,15 +7,18 @@ import FunctionsAndTypesForParsing (regularParse, parseWithEof, parseWithLeftOve
 import Text.Parsec.String (Parser)
 import Text.Parsec.String.Parsec (parse)
 import Text.Parsec.String.Char (oneOf, char, digit ,string, letter, satisfy, anyChar)
-import Text.Parsec.String.Combinator (many1, anyToken, eof, manyTill)
+import Text.Parsec.String.Combinator (many1, anyToken, eof, manyTill, lookAhead)
 import Text.Parsec.Combinator (choice)
 import Text.ParserCombinators.Parsec (try)
+
+data Chunk = Chunk { left :: String, right :: String }
+    deriving Show
 
 main :: IO ()
 main = do
     a <- getArgs
     case a of
-      [str] -> either print print $ parse ugh "" str
+      [str] -> either print print $ parse (parseAround "heart") "" str
       _ -> error "please pass one argument with the string to parse"
 
 myParser :: Parser Integer
@@ -36,6 +39,13 @@ whitespace = void $ many $ oneOf " \n\t"
 
 rhymes :: Parser String
 rhymes = choice [string "art", string "cart"]
+
+-- Parse before and after a word
+parseAround word = do
+    before <- manyTill anyToken (lookAhead $ try $ (void $ string word))
+    string word
+    after <- many anyToken
+    return $ Chunk before after
 
 -- runhaskell ParseString.hs "horse before the heart right"
 -- Try on "hey there heart hey"
